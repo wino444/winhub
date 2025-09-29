@@ -176,13 +176,13 @@ local AddSection = function(SectionFrame, Parameters)
                 TextWrapped = true
             })
         elseif Type:match('Image') then
-            Library:Create('ImageLabel', {
-                Parent = Main,
-                BackgroundTransparency = 1,
-                Size = UDim2_new(0, 60, 0, 60),
-                Position = UDim2_new(0, 10, 0, 0),
-                Image = Info[1]
-            })
+            local profileImage = Instance.new("ImageLabel") -- ใช้โค้ดที่คุณให้
+            profileImage.Size = UDim2.new(0, 60, 0, 60)
+            profileImage.Position = UDim2.new(0, 10, 0, 10)
+            profileImage.BackgroundTransparency = 1
+            profileImage.Image = Info[1] -- URL จาก getAvatarHeadshotUrl
+            profileImage.Parent = Main -- ใช้ Main แทน contentFrame เพื่อให้เข้ากับโครงสร้าง
+            profileImage.ScaleType = Enum.ScaleType.Fit -- เพิ่มเพื่อให้รูป fit
         end
     end
 
@@ -194,7 +194,6 @@ local Notify = Library.Notify
 Notify.Notifications = {}
 
 function Notify:new(Title, Text, Time)
-    -- Keep the original Notify code
     Title = Title or 'Notification'; Text = Text or 'Blacks in the premice!'; Time = Time or 5;
 
     local Notification = {}
@@ -465,7 +464,7 @@ function Library:new(Parameters)
         Background.Visible = true
     end)
 
-    return Background -- Return Background instead of UI
+    return Background
 end
 
 return Library
