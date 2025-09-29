@@ -139,8 +139,10 @@ local AddSection = function(SectionFrame, Parameters)
                 PlaceholderColor3 = Color3_new(178, 178, 178),
                 TextColor3 = Color3_new(255, 255, 255),
                 TextSize = 18,
-                BackgroundColor3 = Color3.fromRGB(128,128,128),
-                BorderSizePixel = 0,
+                BackgroundTransparency = 0,
+                BackgroundColor3 = Colors.Mid,
+                BorderColor3 = Colors.Border,
+                BorderSizePixel = 1,
                 Position = UDim2_new(0.5, 0, 0, 0),
                 Size = UDim2_new(0.4, 0, 1, 0),
                 Parent = Box
@@ -150,21 +152,27 @@ local AddSection = function(SectionFrame, Parameters)
                 Info[2](TextBox.Text)
             end)
         elseif Type:match('Button') then
-            local Button = Library:Create('TextButton', {
-                Parent = Main,
+            local Button = Library:Create('Frame', {
+                Name = Type,
+                Size = UDim2_new(1, 0, 0, 30),
+                BackgroundTransparency = 1,
+                BorderSizePixel = 0,
+                Parent = Main
+            }); Library:Create('TextButton', {
+                Parent = Button,
                 BackgroundColor3 = Colors.Mid,
                 BorderColor3 = Colors.Border,
-                Size = UDim2_new(1, -20, 0, 30),
                 Position = UDim2_new(0, 10, 0, 0),
+                Size = UDim2_new(1, -20, 1, 0),
                 Font = Enum.Font.Gotham,
                 Text = Info[1],
                 TextSize = 18,
                 TextColor3 = Color3_new(255, 255, 255)
             })
             
-            Button.MouseButton1Click:Connect(Info[2])
+            Button.TextButton.MouseButton1Click:Connect(Info[2])
         elseif Type:match('Label') then
-            Library:Create('TextLabel', {
+            local Label = Library:Create('TextLabel', {
                 Parent = Main,
                 BackgroundTransparency = 1,
                 Size = UDim2_new(1, 0, 0, Info[3] or 30),
@@ -176,12 +184,15 @@ local AddSection = function(SectionFrame, Parameters)
                 TextWrapped = true
             })
         elseif Type:match('Image') then
-            Library:Create('ImageLabel', {
+            local profileImage = Library:Create('ImageLabel', {
                 Parent = Main,
                 BackgroundTransparency = 1,
-                Size = UDim2_new(0, 60, 0, 60),
-                Position = UDim2_new(0, 10, 0, 0),
-                Image = Info[1]
+                Size = UDim2_new(0, 100, 0, 100), -- ปรับใหญ่ขึ้นสำหรับมือถือ
+                Position = UDim2_new(0, 10, 0, 10),
+                Image = Info[1] or 'rbxassetid://0', -- Fallback ถ้า URL ล้มเหลว
+                ScaleType = Enum.ScaleType.Fit,
+                BorderSizePixel = 1, -- เพื่อ debug
+                BorderColor3 = Color3.fromRGB(255, 0, 0) -- สีแดงเพื่อเห็นขอบเขตถ้าไม่แสดง
             })
         end
     end
@@ -189,16 +200,15 @@ local AddSection = function(SectionFrame, Parameters)
     return Section
 end
 
-Library.Notify = {} -- Keep Notify as is
+Library.Notify = {}
 local Notify = Library.Notify
 Notify.Notifications = {}
 
 function Notify:new(Title, Text, Time)
-    -- Keep the original Notify code
-    Title = Title or 'Notification'; Text = Text or 'Blacks in the premice!'; Time = Time or 5;
-
+    Title = Title or 'Notification'
+    Text = Text or 'Blacks in the premice!'
+    Time = Time or 5
     local Notification = {}
-
     local Object = Library:Create('TextButton', {
         Name = 'Notification',
         BackgroundColor3 = Colors.MainBorder,
@@ -208,7 +218,8 @@ function Notify:new(Title, Text, Time)
         Position = UDim2_new(1.5, -270, 1, -104),
         Size = UDim2_new(0, 270, 0, 80),
         Text = ''
-    }); Library:Create('Frame', {
+    })
+    Library:Create('Frame', {
         Name = 'Topbar',
         Position = UDim2_new(0, 0, 0, 0),
         Size = UDim2_new(1, 0, 0.3, 0),
@@ -216,7 +227,8 @@ function Notify:new(Title, Text, Time)
         BorderSizePixel = 0,
         BackgroundColor3 = Color3_new(255, 255, 255),
         Parent = Object
-    }); Library:Create('UIGradient', {
+    })
+    Library:Create('UIGradient', {
         Parent = Object.Topbar,
         Color = ColorSequence.new({
             ColorSequenceKeypoint.new(0, Color3_new(129, 129, 129)),
@@ -224,7 +236,8 @@ function Notify:new(Title, Text, Time)
             ColorSequenceKeypoint.new(1, Color3_new(20, 20, 20))
         }),
         Rotation = 90
-    }); Library:Create('TextLabel', {
+    })
+    Library:Create('TextLabel', {
         BackgroundTransparency = 1,
         Position = UDim2_new(0, 0, 0, 0),
         Size = UDim2_new(1, 0, 0.8, 0),
@@ -235,7 +248,8 @@ function Notify:new(Title, Text, Time)
         TextXAlignment = Enum.TextXAlignment.Left,
         Name = 'Title',
         Parent = Object.Topbar
-    }); Library:Create('TextLabel', {
+    })
+    Library:Create('TextLabel', {
         Text = Text,
         TextColor3 = Color3_new(255, 255, 255),
         TextWrapped = true,
@@ -248,23 +262,17 @@ function Notify:new(Title, Text, Time)
         Size = UDim2_new(0.98, 0, 0.7, 0),
         Parent = Object
     })
-
     Notification.Object = Object
-
     function Notification:Close()
         return TweenService:Create(Object, TweenInfo.new(0.2, Enum.EasingStyle.Sine, Enum.EasingDirection.In, 0, false, 0), {
             Position = UDim2.new(1.3, 0, Object.Position.Y.Scale, 0)
         }):Play()
     end
-
     Object.MouseButton1Click:Connect(function()
         Notification:Close()
     end)
-
     Object.Parent = UI
-
     table.insert(Notify.Notifications, Notification)
-
     for I, FoundNotification in next, Notify.Notifications do
         if FoundNotification ~= Notification then
             TweenService:Create(FoundNotification.Object, TweenInfo.new(0.4, Enum.EasingStyle.Sine, Enum.EasingDirection.Out, 0, false, 0), {
@@ -272,27 +280,19 @@ function Notify:new(Title, Text, Time)
             }):Play()
         end
     end
-
     TweenService:Create(Object, TweenInfo.new(0.4, Enum.EasingStyle.Sine, Enum.EasingDirection.Out, 0, false, 0), {
         Position = UDim2_new(1, -270, 1, -104)
     }):Play()
-
     coroutine.wrap(function()
         wait(Time)
-
         if Notification then
             Notification:Close()
-
             local Obj = Notification.Object
-
             table.remove(Notify.Notifications, table.find(Notify.Notifications, Notification))
-
             wait(0.5)
-
             Obj:Destroy()
         end
     end)()
-
     return Notification
 end
 
@@ -336,17 +336,20 @@ function Library:new(Parameters)
         TextXAlignment = Enum.TextXAlignment.Left
     })
 
-    local TabHolder = self:Create('Frame', {
+    local TabHolder = self:Create('ScrollingFrame', {
         Parent = Background,
         Name = 'TabHolder',
         BackgroundColor3 = Colors.MainBorder,
         Size = UDim2_new(0, 120, 1, 0),
-        BackgroundTransparency = 0
-    }); self:Create('UIListLayout', {
+        BackgroundTransparency = 0,
+        BorderSizePixel = 0,
+        ScrollBarThickness = 5,
+        CanvasSize = UDim2_new(0, 0, 0, 0)
+    }); Library:Create('UIListLayout', {
         Parent = TabHolder,
         SortOrder = Enum.SortOrder.LayoutOrder,
         Padding = UDim.new(0, 5)
-    }); self:Create('TextLabel', {
+    }); Library:Create('TextLabel', {
         Parent = TabHolder,
         Size = UDim2_new(1,0,0,40),
         BackgroundTransparency = 1,
@@ -398,74 +401,31 @@ function Library:new(Parameters)
         Parent = Background,
         Size = UDim2_new(0,30,0,30),
         Position = UDim2_new(1,-40,0,5),
+        BorderSizePixel = 1,
+        BorderColor3 = Colors.Border,
         BackgroundColor3 = Color3.fromRGB(255,0,0),
         Text = "X",
         TextColor3 = Color3_new(255, 255, 255),
         TextSize = 20
     })
 
-    -- Minimize setup
-    local MinimizeFrame = self:Create('Frame', {
-        Size = UDim2_new(0, 50, 0, 50),
-        Position = UDim2_new(0, 10, 0, 10),
-        BackgroundTransparency = 1,
-        Active = true,
-        Parent = UI,
-        Visible = false
-    })
-    local OpenButton = self:Create('ImageButton', {
-        Size = UDim2_new(1, 0, 1, 0),
-        BackgroundTransparency = 1,
-        Image = "rbxassetid://106575147804507",
-        Parent = MinimizeFrame
-    })
+    UI.Background.Close.MouseButton1Click:Connect(function()
+        UI:Destroy()
+    end)
 
-    local minDragging, minDragInput, minDragStart, minStartPos
-
-    local function minUpdateInput(input)
-        local delta = input.Position - minDragStart
-        MinimizeFrame.Position = UDim2.new(
-            minStartPos.X.Scale, minStartPos.X.Offset + delta.X,
-            minStartPos.Y.Scale, minStartPos.Y.Offset + delta.Y
-        )
+    local Sections = {}; do
+        for Index, Info in next, Parameters.Tab do
+            if Index:lower():match'section' and #Sections < 2 then
+                Sections[#Sections+1] = Info
+            end
+        end
     end
 
-    MinimizeFrame.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-            minDragging = true
-            minDragStart = input.Position
-            minStartPos = MinimizeFrame.Position
-            input.Changed:Connect(function()
-                if input.UserInputState == Enum.UserInputState.End then
-                    minDragging = false
-                end
-            end)
-        end
-    end)
+    for _, Info in next, Sections do
+        AddSection(UI, Info)
+    end
 
-    MinimizeFrame.InputChanged:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
-            minDragInput = input
-        end
-    end)
-
-    game:GetService("UserInputService").InputChanged:Connect(function(input)
-        if minDragging and input == minDragInput then
-            minUpdateInput(input)
-        end
-    end)
-
-    Close.MouseButton1Click:Connect(function()
-        Background.Visible = false
-        MinimizeFrame.Visible = true
-    end)
-
-    OpenButton.MouseButton1Click:Connect(function()
-        MinimizeFrame.Visible = false
-        Background.Visible = true
-    end)
-
-    return Background -- Return Background instead of UI
+    return UI
 end
 
 return Library
