@@ -1,4 +1,4 @@
--- ui.lua (อัพโหลดไปยัง https://raw.githubusercontent.com/wino444/winhub/main/ui.lua)
+-- ui.lua (Upload this to https://raw.githubusercontent.com/wino444/winhub/main/ui.lua or your repo)
 local Library = {} -- coded this while jamming shinitai chan - jack @ 10:06AM PST, 3/24/2021 (took me 3 hrs 22 seconds (i had to recode it))
 Library.flags = {}
 
@@ -16,7 +16,7 @@ function Library:Create(Class, Properties)
         end)
 
         if Success then
-            Obj[K] = V
+            Obj[K] = V;
         end
     end
 
@@ -78,7 +78,7 @@ local AddSection = function(SectionFrame, Parameters)
                 Name = Type,
                 Size = UDim2_new(1, 0, 0, 30),
                 BackgroundTransparency = 1,
-                BorderSizePixel = 0
+                BorderSizePixel = 0,
             }); Library:Create('ImageButton', {
                 Parent = Toggle,
                 Name = 'Button',
@@ -91,7 +91,7 @@ local AddSection = function(SectionFrame, Parameters)
                 ImageColor3 = Color3.fromRGB(255, 255, 255),
                 ImageTransparency = (Info[2] and 0) or 1,
                 Image = 'http://www.roblox.com/asset/?id=4776914445',
-                ScaleType = Enum.ScaleType.Fit
+                ScaleType = Enum.ScaleType.Fit,
             }); Library:Create('TextLabel', {
                 Parent = Toggle,
                 Name = 'Label',
@@ -113,6 +113,7 @@ local AddSection = function(SectionFrame, Parameters)
                 local Bool = Library.flags[Flag]
                 
                 Toggle.Button.ImageTransparency = (Bool and 0) or 1
+
                 Info[4](Bool)
             end)
         elseif Type:match('Box') then
@@ -175,27 +176,26 @@ local AddSection = function(SectionFrame, Parameters)
                 TextWrapped = true
             })
         elseif Type:match('Image') then
-            local profileImage = Instance.new("ImageLabel")
-            profileImage.Size = UDim2.new(0, 60, 0, 60)
-            profileImage.Position = UDim2.new(0, 10, 0, 10)
-            profileImage.BackgroundTransparency = 1
-            profileImage.Image = Info[1] or "rbxassetid://0" -- Fallback ถ้า Info[1] เป็น nil
-            profileImage.Parent = Main
-            profileImage.ScaleType = Enum.ScaleType.Fit
-            profileImage.BorderSizePixel = 1 -- เพิ่มขอบเพื่อ debug
-            profileImage.BorderColor3 = Color3.fromRGB(255, 255, 255)
+            Library:Create('ImageLabel', {
+                Parent = Main,
+                BackgroundTransparency = 1,
+                Size = UDim2_new(0, 60, 0, 60),
+                Position = UDim2_new(0, 10, 0, 0),
+                Image = Info[1]
+            })
         end
     end
 
     return Section
 end
 
-Library.Notify = {}
+Library.Notify = {} -- Keep Notify as is
 local Notify = Library.Notify
 Notify.Notifications = {}
 
 function Notify:new(Title, Text, Time)
-    Title = Title or 'Notification'; Text = Text or 'Blacks in the premice!'; Time = Time or 5
+    -- Keep the original Notify code
+    Title = Title or 'Notification'; Text = Text or 'Blacks in the premice!'; Time = Time or 5;
 
     local Notification = {}
 
@@ -404,6 +404,7 @@ function Library:new(Parameters)
         TextSize = 20
     })
 
+    -- Minimize setup
     local MinimizeFrame = self:Create('Frame', {
         Size = UDim2_new(0, 50, 0, 50),
         Position = UDim2_new(0, 10, 0, 10),
@@ -464,7 +465,7 @@ function Library:new(Parameters)
         Background.Visible = true
     end)
 
-    return Background
+    return Background -- Return Background instead of UI
 end
 
 return Library
