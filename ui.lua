@@ -1,4 +1,4 @@
--- Library Code (Upload this to https://raw.githubusercontent.com/wino444/winhub/main/ui.lua)
+-- นี่คือ ui.lua (Library ที่โหลดจาก URL: https://raw.githubusercontent.com/wino444/winhub/main/ui.lua)
 local Library = {} -- coded this while jamming shinitai chan - jack @ 10:06AM PST, 3/24/2021 (took me 3 hrs 22 seconds (i had to recode it))
 Library.flags = {}
 
@@ -25,25 +25,24 @@ end
 
 local UI = Library:Create('ScreenGui', {
     Name = 'UI',
-    Parent = game:GetService'CoreGui'
+    Parent = game:GetService'CoreGui',
+    ResetOnSpawn = false
 })
 
 local Colors = {
-    Main = Color3_new(30, 30, 30),
-    MainBorder = Color3_new(20, 20, 20),
-    Mid = Color3_new(25, 25, 25),
+    Main = Color3_new(100, 100, 100),
+    MainBorder = Color3_new(80, 80, 80),
+    Mid = Color3_new(60, 60, 60),
     Border = Color3_new(40, 40, 40)
 }
 
-local AddSection = function(UI, Parameters)
-    local Holder = UI.Background.Holder.Sections
-        
+local AddSection = function(UI, Parameters, SectionFrame)
     local Section = Library:Create('Frame', {
         Name = 'Section',
         BackgroundColor3 = Colors.MainBorder,
         BorderColor3 = Colors.Border,
-        Parent = Holder
-    }); Library:Create('ScrollingFrame', {
+        Parent = SectionFrame
+    }); local Main = Library:Create('ScrollingFrame', {
         Parent = Section,
         Name = 'Main',
         BorderSizePixel = 0,
@@ -55,9 +54,10 @@ local AddSection = function(UI, Parameters)
         MidImage = 'http://www.roblox.com/asset/?id=58757773',
         TopImage = 'http://www.roblox.com/asset/?id=58757773',
         ScrollBarImageColor3 = Color3_new(117, 117, 117),
-        ScrollBarThickness = 5
+        ScrollBarThickness = 5,
+        CanvasSize = UDim2.new(0, 0, 2, 0)  -- เพิ่มเพื่อเลื่อนได้
     }); Library:Create('UIListLayout', {
-        Parent = Section.Main,
+        Parent = Main,
         SortOrder = Enum.SortOrder.LayoutOrder
     }); Library:Create('TextLabel', {
         Parent = Section,
@@ -75,7 +75,7 @@ local AddSection = function(UI, Parameters)
     for Type, Info in next, Parameters do
         if Type:match('Toggle') then
             local Toggle = Library:Create('Frame', {
-                Parent = Section.Main,
+                Parent = Main,
                 Name = Type,
                 Size = UDim2_new(1, 0, 0.069, 0),
                 BackgroundTransparency = 1,
@@ -122,7 +122,7 @@ local AddSection = function(UI, Parameters)
         elseif Type:match('Box') then
             local Box = Library:Create('Frame', {
                 BackgroundTransparency = 1,
-                Parent = Section.Main,
+                Parent = Main,
                 Name = Type,
                 Size = UDim2_new(1, 0, 0.11, 0)
             }); Library:Create('TextLabel', {
@@ -160,7 +160,7 @@ local AddSection = function(UI, Parameters)
                 Size = UDim2_new(1, 0, 0.069, 0),
                 BackgroundTransparency = 1,
                 BorderSizePixel = 0,
-                Parent = Section.Main
+                Parent = Main
             }); Library:Create('TextButton', {
                 Parent = Button,
                 BackgroundColor3 = Colors.Mid,
@@ -288,48 +288,32 @@ end
 
 function Library:new(Parameters)
     Parameters = Parameters or {
-        Name = 'dot_mp4 wuz here :D',
+        Name = 'TOUx1 HUB',
         Tab = {
-            Text = 'stuffz',
+            Text = 'หน้าหลัก',
             Section1 = {
-                SectionText = 'sec',
-                Toggle = {
-                    'zup',
-                    true,
-                    'flag1',
-                    function(bool)
-                        print('zup toggle set to: ', bool)
-                    end
-                },
-                Box = {
-                    'print text',
-                    function(str)
-                        print(str)
-                    end
-                },
-                Button = {
-                    'balls',
-                    function()
-                        local Player = game:GetService'Players'.LocalPlayer
-                        if Player.Character then
-                            Player.Character:ClearAllChildren()
-                        end
-                    end
-                },
-                NotifButton = {
-                    'notif',
-                    function()
-                        Notify:new('Test', 'test', 3)
-                    end
-                }
+                SectionText = 'Home',
+                -- Add your home content as elements
+            },
+            Section2 = {
+                SectionText = 'ผู้เล่น',
+                -- Add player content
+            },
+            Section3 = {
+                SectionText = 'Script',
+                -- Add script content
+            },
+            Section4 = {
+                SectionText = 'script ui',
+                -- Add script ui content
             }
         }
     }
 
     local Background = self:Create('Frame', {
         Name = 'Background',
-        Size = UDim2_new(0, 385, 0, 263),
-        Position = UDim2_new(0.5, 0, 0.5, 0),
+        Size = UDim2_new(0, 500, 0, 300),
+        Position = UDim2_new(0.5, -250, 0.5, -150),
         BackgroundColor3 = Colors.Main,
         BorderColor3 = Colors.MainBorder,
         BorderSizePixel = 2,
@@ -345,7 +329,7 @@ function Library:new(Parameters)
         BackgroundColor3 = Color3_new(255, 255, 255),
         BorderSizePixel = 0,
         Position = UDim2_new(0, 0, 0, 0),
-        Size = UDim2_new(0, 385, 0, 25)
+        Size = UDim2_new(1, 0, 0, 40)
     }); self:Create('UIGradient', {
         Color = ColorSequence.new({
             ColorSequenceKeypoint.new(0, Colors.MainBorder),
@@ -358,109 +342,110 @@ function Library:new(Parameters)
         Parent = Topbar,
         BackgroundTransparency = 1,
         BorderSizePixel = 0,
-        Size = UDim2_new(0, 200, 0, 25),
+        Size = UDim2_new(0, 200, 0, 40),
         Position = UDim2_new(0.018, 0, 0, 0),
-        Font = Enum.Font.Code,
+        Font = Enum.Font.GothamBold,
         Text = Parameters.Name,
         TextColor3 = Color3_new(255, 255, 255),
-        TextSize = 14,
+        TextSize = 20,
         TextXAlignment = Enum.TextXAlignment.Left
     })
 
-    local Detail = self:Create('Frame', {
+    local TabHolder = self:Create('Frame', {
         Parent = Background,
-        Name = 'Detail',
-        Position = UDim2_new(1, -318, 0, 37),
-        Size = UDim2_new(0, 293, 0, 15),
-        BackgroundTransparency = 0,
-        BorderSizePixel = 0,
-        BackgroundColor3 = Color3_new(255, 255, 255),
-    }); self:Create('UIGradient', {
-        Color = ColorSequence.new({
-            ColorSequenceKeypoint.new(0, Colors.MainBorder),
-            ColorSequenceKeypoint.new(0.541, Colors.Mid),
-            ColorSequenceKeypoint.new(1, Colors.Main)
-        }),
-        Rotation = -90,
-        Parent = Detail
+        Name = 'TabHolder',
+        BackgroundTransparency = 1,
+        Position = UDim2_new(0, 0, 0, 40),
+        Size = UDim2_new(1, 0, 0, 40)
+    }); self:Create('UIListLayout', {
+        Parent = TabHolder,
+        FillDirection = Enum.FillDirection.Horizontal,
+        SortOrder = Enum.SortOrder.LayoutOrder
     })
 
-    local Holder = self:Create('Frame', {
+    local ContentHolder = self:Create('Frame', {
         Parent = Background,
-        Name = 'Holder',
-        BackgroundColor3 = Colors.MainBorder,
-        BorderColor3 = Colors.Border,
-        BorderSizePixel = 1,
-        Size = UDim2_new(0, 371, 0, 205),
-        Position = UDim2_new(0, 7, 1, -212)
-    }); self:Create('Frame', {
-        Parent = Holder,
-        Name = 'Sections',
-        Size = UDim2_new(0, 353, 0, 186),
-        Position = UDim2_new(0.024, 0, 0.049, 0),
-        BorderSizePixel = 0,
-        BackgroundColor3 = Colors.Mid
-    }); self:Create('UIGridLayout', {
-        Parent = Holder.Sections,
-        CellSize = UDim2_new(0.493, 0, 1, 0)
-    }); self:Create('TextButton', {
-        Parent = Background,
-        Name = 'Exit',
-        Size = UDim2_new(0, 24, 0, 24),
-        Position = UDim2_new(0.92, 0, 0.106, 0),
-        BorderSizePixel = 1,
-        BorderColor3 = Colors.Border,
-        BackgroundColor3 = Colors.MainBorder,
+        Name = 'ContentHolder',
+        BackgroundTransparency = 1,
+        Position = UDim2_new(0, 0, 0, 80),
+        Size = UDim2_new(1, 0, 1, -80)
+    })
+
+    local Tabs = {}
+    local Sections = Parameters.Tab
+    for i = 1, 4 do
+        local TabButton = self:Create('TextButton', {
+            Parent = TabHolder,
+            Size = UDim2_new(0.25, 0, 1, 0),
+            BackgroundColor3 = Colors.Mid,
+            BorderColor3 = Colors.Border,
+            Text = Sections['Section'..i].SectionText,
+            Font = Enum.Font.Gotham,
+            TextSize = 18,
+            TextColor3 = Color3_new(255, 255, 255)
+        })
+        local SectionFrame = self:Create('Frame', {
+            Parent = ContentHolder,
+            Size = UDim2_new(1, 0, 1, 0),
+            BackgroundTransparency = 1,
+            Visible = (i == 1)
+        })
+        AddSection(UI, Sections['Section'..i], SectionFrame)
+        Tabs[i] = {Button = TabButton, Frame = SectionFrame}
+
+        TabButton.MouseButton1Click:Connect(function()
+            for _, tab in Tabs do
+                tab.Frame.Visible = false
+            end
+            SectionFrame.Visible = true
+        end)
+    end
+
+    local Close = self:Create('TextButton', {
+        Parent = Topbar,
+        Size = UDim2_new(0, 30, 0, 30),
+        Position = UDim2_new(1, -40, 0, 5),
+        BackgroundColor3 = Color3.fromRGB(255,0,0),
         Text = 'X',
         TextColor3 = Color3_new(255, 255, 255),
-        TextSize = 8
-    }); self:Create('TextLabel', {
-        Parent = Background,
-        Name = 'Label',
-        Size = UDim2_new(0, 60, 0, 22),
-        Position = UDim2_new(0, 7, 0, 30),
-        TextColor3 = Color3_new(255, 255, 255),
-        BorderSizePixel = 1,
-        BorderColor3 = Colors.Border,
-        BackgroundColor3 = Colors.MainBorder,
-        Text = Parameters.Tab.Text or 'Main',
-        Font = Enum.Font.Code,
-        TextSize = 14
+        TextSize = 20
     })
-
-    self:Create('Frame', {
-        Name = 'Connector',
-        Parent = Background.Exit,
-        BackgroundColor3 = Colors.MainBorder,
-        BorderSizePixel = 0,
-        ZIndex = 2,
-        Size = UDim2_new(1.1, 0, 0.2, 0),
-        Position = UDim2_new(-0.1, 0, 0.97, 0)
-    }); self:Create('Frame', {
-        Name = 'Connector',
-        Parent = Background.Label,
-        BackgroundColor3 = Colors.MainBorder,
-        BorderSizePixel = 0,
-        ZIndex = 2,
-        Size = UDim2_new(1.1, 0, 0.2, 0),
-        Position = UDim2_new(0, 0, 0.97, 0)
-    })
-
-    UI.Background.Exit.MouseButton1Click:Connect(function()
+    Close.MouseButton1Click:Connect(function()
         UI:Destroy()
     end)
 
-    local Sections = {}; do
-        for Index, Info in next, Parameters.Tab do
-            if Index:lower():match'section' and #Sections < 2 then
-                Sections[#Sections+1] = Info
-            end
-        end
-    end
-
-    for _, Info in next, Sections do
-        AddSection(UI, Info)
-    end
+    -- Integrate minimize from HUB
+    local MinimizeFrame = self:Create('Frame', {
+        Size = UDim2_new(0, 50, 0, 50),
+        Position = UDim2_new(0, 10, 0, 10),
+        BackgroundTransparency = 1,
+        Active = true,
+        Parent = UI,
+        Visible = false
+    })
+    local OpenButton = self:Create('ImageButton', {
+        Size = UDim2_new(1, 0, 1, 0),
+        BackgroundTransparency = 1,
+        Image = "rbxassetid://106575147804507",
+        Parent = MinimizeFrame
+    })
+    OpenButton.MouseButton1Click:Connect(function()
+        MinimizeFrame.Visible = false
+        Background.Visible = true
+    end)
+    local MinButton = self:Create('TextButton', {
+        Parent = Topbar,
+        Size = UDim2_new(0, 30, 0, 30),
+        Position = UDim2_new(1, -80, 0, 5),
+        BackgroundColor3 = Color3.fromRGB(255,165,0),
+        Text = '-',
+        TextColor3 = Color3_new(255, 255, 255),
+        TextSize = 20
+    })
+    MinButton.MouseButton1Click:Connect(function()
+        Background.Visible = false
+        MinimizeFrame.Visible = true
+    end)
 
     return UI
 end
